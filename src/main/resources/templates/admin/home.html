@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="fragments/bootstrap :: head"></head>
+<body class="fix-header card-no-border fix-sidebar">
+	<th:block th:include="fragments/bootstrap :: preloader"></th:block>
+	<div id="main-wrapper">
+		<th:block th:include="fragments/bootstrap :: navigation"></th:block>
+		<div class="page-wrapper">
+			<div class="container-fluid">
+				<div class="row page-titles">
+					<div class="col-md-5 align-self-center">
+						<h3 class="text-themecolor">Admin Dashboard</h3>
+					</div>
+					<div class="col-md-7 align-self-center">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item active">Admin Dashboard</li>
+						</ol>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-lg-4 col-xlg-2">
+						<div class="card">
+							<div class="box bg-info text-center">
+								<h1 class="font-light text-white">2,064</h1>
+								<h6 class="text-white">Sessions</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-4 col-xlg-2">
+						<div class="card">
+							<div class="box bg-primary text-center">
+								<h1 class="font-light text-white">1,738</h1>
+								<h6 class="text-white">Users</h6>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-4 col-xlg-2">
+						<div class="card">
+							<div class="box bg-success text-center">
+								<h1 class="font-light text-white">5963</h1>
+								<h6 class="text-white">Page Views</h6>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 col-lg-9">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex">
+									<div>
+										<h4 class="card-title">
+											<span class="lstick"></span>Projects of the Month
+										</h4>
+									</div>
+									<div class="btn-group ml-auto">
+										<a href="JavaScript:void(0)" class="icon-options-vertical link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+										<div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(16px, 32px, 0px); top: 0px; left: 0px; will-change: transform;">
+											<a class="dropdown-item" th:href="@{/admin/dashboard/user}">User</a>
+											<a class="dropdown-item" href="javascript:void(0)">Another action</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item" href="javascript:void(0)">Separated link</a>
+										</div>
+									</div>
+								</div>
+								<div class="table-responsive m-t-20">
+									<table class="table vm no-th-brd no-wrap pro-of-month">
+										<thead>
+											<tr>
+												<th colspan="2">User</th>
+												<th>Email</th>
+												<th>Charge</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="item: ${users}">
+												<th:block th:switch="${item.id % 3}">
+													<!--/* case 0 */-->
+													<th:block th:case="0">
+														<td style="width:50px;font-size:25px;"><span th:text="${item.username.substring(0, 1).toUpperCase()}" class="round round-success" /></td>
+														<td th:text="${item.username}" />
+														<td th:text="${item.email}" />
+														<td><span class="label label-rounded label-success">Java Developer</span></td>
+													</th:block>
+													<!--/* case 1 */-->
+													<th:block th:case="1">
+														<td style="width:50px;font-size:25px;"><span th:text="${item.username.substring(0, 1).toUpperCase()}" class="round round-primary" /></td>
+														<td th:text="${item.username}" />
+														<td th:text="${item.email}" />
+														<td><span class="label label-rounded label-primary">Java Developer</span></td>
+													</th:block>
+													<!--/* default */-->
+													<th:block th:case="*">
+														<td style="width:50px;font-size:25px;"><span th:text="${item.username.substring(0, 1).toUpperCase()}" class="round round-info" /></td>
+														<td th:text="${item.username}" />
+														<td th:text="${item.email}" />
+														<td><span class="label label-rounded label-info">Java Developer</span></td>
+													</th:block>
+												</th:block>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer"> © 2017 Admin Pro by wrappixel.com </footer>
+		</div>
+	</div>
+	<th:block th:include="fragments/bootstrap :: scripts"></th:block>
+</body>
+</html>
