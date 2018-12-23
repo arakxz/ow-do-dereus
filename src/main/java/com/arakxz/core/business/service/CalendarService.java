@@ -1,5 +1,7 @@
 package com.arakxz.core.business.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,8 @@ import com.arakxz.core.business.entity.User;
 @Service
 public class CalendarService {
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    
     public static final int OK = 1;
     public static final int ERROR_FIELD_EMPTY = 2;
 
@@ -26,11 +30,11 @@ public class CalendarService {
     @Autowired
     private CalendarEventRepository calendareventsrepo;
 
+    
     /**
      * @param categories all categories available
      */
     private Map<String, String> categories = createCategories();
-
     private static Map<String, String> createCategories() {
         Map<String, String> categories = new HashMap<String, String>();
 
@@ -43,6 +47,7 @@ public class CalendarService {
         return categories;
     }
 
+    
     /**
      * @return the categories
      */
@@ -50,10 +55,24 @@ public class CalendarService {
         return categories;
     }
 
+    
+    /**
+     * @param user
+     * 
+     * @return
+     */
     public List<CalendarEvent> calendarEventsAvailable(User user) {
         return this.calendareventsrepo.findAllByUser(user);
     }
 
+    
+    /**
+     * @param user
+     * @param start
+     * @param end
+     * 
+     * @return
+     */
     public List<Calendar> eventsAvailable(User user, Date start, Date end) {
 
         return this.calendarrepo.allEventsOnDates(user.getId(), start, end);
@@ -62,7 +81,6 @@ public class CalendarService {
 
     
     /**
-     * 
      * @param user
      * @param title
      * @param color
@@ -88,6 +106,15 @@ public class CalendarService {
     }
 
     
+    /**
+     * @param user
+     * @param title
+     * @param category
+     * @param start
+     * @param end
+     * 
+     * @return
+     */
     public Calendar registerOrUpdateCalendarEvent(
             User user, String title, String category, Date start, Date end) {
 
@@ -95,6 +122,17 @@ public class CalendarService {
 
     }
 
+    
+    /**
+     * @param user
+     * @param title
+     * @param category
+     * @param start
+     * @param end
+     * @param id
+     * 
+     * @return
+     */
     public Calendar registerOrUpdateCalendarEvent(
             User user, String title, String category, Date start, Date end,
             long id) {
@@ -116,6 +154,18 @@ public class CalendarService {
 
         return this.calendarrepo.save(calendar);
 
+    }
+    
+    
+    /**
+     * @param date
+     * 
+     * @return
+     * 
+     * @throws ParseException
+     */
+    public static Date parse(String date) throws ParseException {
+        return new SimpleDateFormat(DATE_FORMAT).parse(date);
     }
 
 }

@@ -33,8 +33,8 @@ public class UserService {
 	@Autowired
 	private HttpServletRequest request;
 
+	
 	/**
-	 * 
 	 * @param username
 	 * @param password
 	 * @param passwordconfirm
@@ -65,7 +65,6 @@ public class UserService {
 	}
 
 	/**
-	 * 
 	 * @param user
 	 * 
 	 * @return
@@ -93,8 +92,8 @@ public class UserService {
 
 	}
 
+	
 	/**
-	 * 
 	 * @return authenticated user
 	 */
 	public User authenticated() {
@@ -102,20 +101,38 @@ public class UserService {
 	}
 	
 	
+	/**
+	 * @return
+	 */
 	public List<User> all() {
 		return this.userrepo.findAll();
 	}
 	
 	
+	/**
+	 * @return
+	 */
 	public List<User> top5Users() {
 		return this.userrepo.findTop5ByOrderByIdDesc();
 	}
 	
 	
+	/**
+	 * @param username
+	 * 
+	 * @return
+	 */
 	public List<User> searchUser(String username) {
 		return this.userrepo.findByUsernameContaining(username);
 	}
 	
+	
+	/**
+	 * @param username
+	 * @param roles
+	 * 
+	 * @return
+	 */
 	public int updateRoles(String username, List<Role> roles) {
 		
 		if (username.isEmpty() || roles.isEmpty()) {
@@ -137,7 +154,6 @@ public class UserService {
 
 	
 	/**
-	 * 
 	 * @param password or string to be encrypted
 	 * 
 	 * @return encrypted string

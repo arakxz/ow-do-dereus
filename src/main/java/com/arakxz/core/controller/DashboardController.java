@@ -35,6 +35,11 @@ public class DashboardController {
     private CalendarService calendarService;
     
 
+    /**
+     * @param model
+     * 
+     * @return
+     */
     @GetMapping
     public String index(Model model) {
 
@@ -46,6 +51,11 @@ public class DashboardController {
     }
     
     
+    /**
+     * @param model
+     * 
+     * @return
+     */
     @GetMapping("calendar")
     public String calendar(Model model) {
         
@@ -59,6 +69,13 @@ public class DashboardController {
     }
     
 
+    /**
+     * @param title
+     * @param category
+     * @param redirect
+     * 
+     * @return
+     */
     @PostMapping("calendar/event")
     public String calendarEventCreate(
             @RequestParam("title") String title,
@@ -77,6 +94,16 @@ public class DashboardController {
     }
     
     
+    /**
+     * @param title
+     * @param category
+     * @param start
+     * @param end
+     * 
+     * @return
+     * 
+     * @throws ParseException
+     */
     @ResponseBody
     @PostMapping(path = "calendar/event/register", produces = "application/json")
     public Map<String, Object> calendarEventRegister(
@@ -91,8 +118,8 @@ public class DashboardController {
                 this.userService.authenticated(),
                 title,
                 category,
-                new SimpleDateFormat("yyyy-MM-dd").parse(start),
-                new SimpleDateFormat("yyyy-MM-dd").parse(end)
+                CalendarService.parse(start),
+                CalendarService.parse(end)
          ));
         
         return response;
@@ -126,8 +153,8 @@ public class DashboardController {
                 this.userService.authenticated(),
                 title,
                 category,
-                new SimpleDateFormat("yyyy-MM-dd").parse(start),
-                new SimpleDateFormat("yyyy-MM-dd").parse(end),
+                CalendarService.parse(start),
+                CalendarService.parse(end),
                 id
          ));
         
@@ -135,6 +162,16 @@ public class DashboardController {
         
     }
     
+    
+    /**
+     * 
+     * @param start
+     * @param end
+     * 
+     * @return
+     * 
+     * @throws ParseException
+     */
     @ResponseBody
     @GetMapping(path = "calendar/events", produces = "application/json")    
     public List<Calendar> calendarEvents(
@@ -142,21 +179,11 @@ public class DashboardController {
   
         return this.calendarService.eventsAvailable(
                 this.userService.authenticated(),
-                new SimpleDateFormat("yyyy-MM-dd").parse(start),
-                new SimpleDateFormat("yyyy-MM-dd").parse(end)
+                CalendarService.parse(start),
+                CalendarService.parse(end)
         ); 
 
     }
-    
 
-    @GetMapping("profile")
-    public String profile(Model model) {
-        
-        User user = userService.authenticated();
-
-        model.addAttribute("user", user);
-
-        return "profile";
-    }
 
 }
