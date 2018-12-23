@@ -4958,15 +4958,24 @@ File: scss
   text-transform: uppercase; }
 
 .fc th.fc-sun,
-.fc th.fc-tue,
-.fc th.fc-thu,
-.fc th.fc-sat {
-  background: #f2f7f8; }
-
 .fc th.fc-mon,
+.fc th.fc-tue,
 .fc th.fc-wed,
-.fc th.fc-fri {
-  background: #f2f7f8; }
+.fc th.fc-thu,
+.fc th.fc-fri,
+.fc th.fc-sat {
+  background: #FFF; }
+ 
+/* .fc th.fc-sun, */
+/* .fc th.fc-tue, */
+/* .fc th.fc-thu, */
+/* .fc th.fc-sat { */
+/*   background: #f2f7f8; } */
+
+/* .fc th.fc-mon, */
+/* .fc th.fc-wed, */
+/* .fc th.fc-fri { */
+/*   background: #f2f7f8; } */
 
 .fc-view {
   margin-top: 0px; }

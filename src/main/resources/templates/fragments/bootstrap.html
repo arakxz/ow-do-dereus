@@ -10,7 +10,8 @@
 	<link th:href="@{/assets/images/favicon.png}" rel="icon" type="image/png" sizes="16x16">
 	<link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 	<link th:href="@{/assets/plugins/jquery-toast/dist/jquery.toast.min.css}" rel="stylesheet">
-	<link th:href="@{/assets/plugins/sweet-alert-2/dist/sweetalert2.min.css}" rel="stylesheet">
+	<!-- <link th:href="@{/assets/plugins/sweet-alert-2/dist/sweetalert2.min.css}" rel="stylesheet"> -->
+	<link th:href="@{/assets/plugins/calendar/css/fullcalendar.css}" rel="stylesheet">
 	<link th:href="@{/assets/css/style.css}" rel="stylesheet">
 	<link th:href="@{/assets/css/colors/default-dark.css}" id="theme" rel="stylesheet">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -116,10 +117,14 @@
 						</th:block>
 						<!--/* end admin block */-->
 						<li>
-							<a class="waves-effect waves-dark" th:href="@{/dashboard}" aria-expanded="false">
+							<a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
 								<i class="mdi mdi-gauge"></i>
 								<span class="hide-menu">Dashboard</span>
 							</a>
+							<ul aria-expanded="false" class="collapse">
+                                <li><a th:href="@{/dashboard}">Home</a></li>
+                                <li><a th:href="@{/dashboard/calendar}">Calendar</a></li>
+                            </ul>
 						</li>
 					</ul>
 				</nav>
@@ -153,11 +158,12 @@
 	<!-- scripts block -->
 	<th:block th:fragment="scripts">
 	<script th:src="@{/assets/plugins/jquery/jquery.min.js}"></script>
+	<script th:src="@{/assets/plugins/jquery/jquery-ui.min.js}"></script>
 	<script th:src="@{/assets/plugins/jquery-toast/dist/jquery.toast.min.js}"></script>
 	<script th:src="@{/assets/plugins/bootstrap/js/popper.min.js}"></script>
 	<script th:src="@{/assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
 	<script th:src="@{/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js}"></script>	
-	<script th:src="@{/assets/plugins/sweet-alert-2/dist/sweetalert2.min.js}"></script>
+	<!-- <script th:src="@{/assets/plugins/sweet-alert-2/dist/sweetalert2.min.js}"></script> -->
 	<script th:src="@{/assets/plugins/waves/waves.min.js}"></script>
 	<script th:src="@{/assets/js/sidebarmenu.js}"></script>
 	<script th:src="@{/assets/js/custom.js}"></script>

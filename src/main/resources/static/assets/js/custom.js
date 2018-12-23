@@ -1,9 +1,89 @@
+(function ($, undefined) { 'use strict';
+
+    var template = ''
+        + '<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true" id="l6058925967">'
+        + '  <div class="modal-dialog">'
+        + '    <div class="modal-content">'
+        + '      <div class="modal-header">'
+        + '        <h4 class="modal-title" id="l9752552239">&nbsp;</h4>'
+        + '        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>'
+        + '      </div>'
+        + '      <div class="modal-body" id="l4341937273">&nbsp;</div>'
+        + '      <div class="modal-footer">'
+        + '        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>'
+        + '        <button type="button" class="btn btn-success waves-effect waves-light" id="l0970989501">&nbsp;</button>'
+        + '      </div>'
+        + '    </div>'
+        + '  </div>'
+        + '</div>';
+
+    
+    var initialize = null;
+    /**
+     * @return {Object}
+     */
+    function init() {
+        if (initialize === null) {
+            initialize = {
+                container: $.extend(
+                        $('#l6058925967'), {
+                            done: function () {
+                                this.modal('hide');
+                                       
+                                return this;
+                            },
+                            wait: function () {
+                                this.find('#l0970989501')
+                                        .html('<i class="mdi mdi-timer text-white"></i> Wait...')
+                                        .prop('disabled', true);
+                                       
+                                return this;
+                            }
+                        }
+                ),
+                header   : $('#l9752552239'),
+                body     : $('#l4341937273'),
+                button   : $('#l0970989501')
+            };
+        }
+        return initialize; 
+    };
+    
+    /**
+     * @param {Object} settings
+     * 
+     * @return
+     */
+    $.imodal = function(settings) {
+
+        var $el = init();
+
+        $el.header.html(settings.title);
+        $el.body.html(
+                typeof settings.body !== 'function' ? settings.body
+                                                    : settings.body()
+        );
+        $el.button
+                .html(settings.button)
+                .prop('disabled', false)
+                .off('click').on('click', settings.then.bind($el.container));
+
+        return $el.container.modal();
+        
+    };
+    
+    $(function () {
+        $('body').append(template);
+    });
+
+} (jQuery));
+
 /*
-Template Name: Admin Pro Admin
-Author: Wrappixel
-Email: niravjoshi87@gmail.com
-File: js
-*/
+ * Template Name: Admin Pro Admin
+ * Author: Wrappixel
+ * Email: niravjoshi87@gmail.com
+ * File: js
+ */
 $(function() {
     "use strict";
     $(function() {
@@ -161,5 +241,5 @@ $(function() {
         $("#loginform").slideUp();
         $("#recoverform").fadeIn();
     });
-
+    
 });

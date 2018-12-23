@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="fragments/bootstrap :: head"></head>
+<body class="fix-header card-no-border fix-sidebar">
+	<th:block th:include="fragments/bootstrap :: preloader"></th:block>
+	<div id="main-wrapper">	
+		<th:block th:include="fragments/bootstrap :: navigation"></th:block>		
+		<div class="page-wrapper">
+			<div class="container-fluid">
+				<div class="row page-titles">
+					<div class="col-md-5 align-self-center">
+						<h3 class="text-themecolor">Calendar</h3>
+					</div>
+					<div class="col-md-7 align-self-center">
+						<ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Calendar</li>
+                        </ol>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card-body">
+                                        <h4 class="m-t-10">Drag & Drop Event</h4>
+                                        <div id="calendar--events">
+                                            <small th:if="${events.empty}">No events founds</small>
+                                            <th:block th:each="event: ${events}">
+                                            <div class="calendar-events ui-draggable ui-draggable-handle" th:data-title="${event.title}" th:data-class="${event.category}">
+                                                <i th:class="'fa fa-circle ' + ${event.category.replace('bg', 'text')}"></i> <th:block th:text="${event.title}"></th:block>
+                                            </div>
+                                            </th:block>
+                                        </div>
+                                        <button id="calendar--events-create" class="btn m-t-10 btn-info btn-block waves-effect waves-light"><i class="ti-plus"></i> Add New Event</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-body">
+                                        <div id="calendar--container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer"> © 2017 Admin Pro by wrappixel.com </footer>
+		</div>	
+	</div>
+
+
+	<th:block th:include="fragments/bootstrap :: scripts"></th:block>
+	
+	<script th:inline="javascript">/*<![CDATA[*/
+    /**
+     * @namespace
+     */
+    var Ox00 = {
+        /**
+         * @param {Object} categories
+         */
+        categories: /*[[${categories}]]*/ null,
+    };
+    /*]]>*/</script>
+	
+	<script th:src="@{/assets/plugins/moment/moment.js}"></script>
+	<script th:src="@{/assets/plugins/calendar/js/fullcalendar.min.js}"></script>
+	<script th:src="@{/assets/js/calendar.js}"></script>
+	
+</body>
+</html>
