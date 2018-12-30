@@ -75,7 +75,7 @@ public class CalendarService {
      */
     public List<Calendar> eventsAvailable(User user, Date start, Date end) {
 
-        return this.calendarrepo.allEventsOnDates(user.getId(), start, end);
+        return this.calendarrepo.allEventsWithDates(user.getId(), start, end);
 
     }
 
@@ -168,4 +168,69 @@ public class CalendarService {
         return new SimpleDateFormat(DATE_FORMAT).parse(date);
     }
 
+    
+    /**
+     * @return the first day of the current month 
+     */
+    public static Date firstDayOfMonth() {
+
+        java.util.Calendar month = java.util.Calendar.getInstance();
+
+        month.set(java.util.Calendar.DAY_OF_MONTH, 1);
+        month.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        month.set(java.util.Calendar.SECOND, 0);
+        month.set(java.util.Calendar.MINUTE, 0);
+
+        return month.getTime();
+
+    }
+    
+    
+    /**
+     * @return the last day of the current month
+     */
+    public static Date lastDayOfMonth() {
+
+        java.util.Calendar month = java.util.Calendar.getInstance();
+
+        month.set(java.util.Calendar.DAY_OF_MONTH, month.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
+        month.set(java.util.Calendar.HOUR_OF_DAY, 23);
+        month.set(java.util.Calendar.SECOND, 59);
+        month.set(java.util.Calendar.MINUTE, 59);
+
+        return month.getTime();
+
+    }
+    
+    
+    public static Date firstDayOfWeek() {
+
+        java.util.Calendar month = java.util.Calendar.getInstance();
+
+        month.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.SUNDAY);
+        month.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        month.set(java.util.Calendar.SECOND, 0);
+        month.set(java.util.Calendar.MINUTE, 0);
+
+        return month.getTime();
+
+    }
+    
+    
+    /**
+     * @return the last day of the current month
+     */
+    public static Date lastDayOfWeek() {
+
+        java.util.Calendar month = java.util.Calendar.getInstance();
+
+        month.set(java.util.Calendar.DAY_OF_WEEK, java.util.Calendar.SATURDAY);
+        month.set(java.util.Calendar.HOUR_OF_DAY, 23);
+        month.set(java.util.Calendar.SECOND, 59);
+        month.set(java.util.Calendar.MINUTE, 59);
+
+        return month.getTime();
+
+    }
+    
 }

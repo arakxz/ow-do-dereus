@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head th:fragment="head">
+<head th:fragment="head" th:with="thuri = ${#httpServletRequest.requestURI}">
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,8 +10,7 @@
 	<link th:href="@{/assets/images/favicon.png}" rel="icon" type="image/png" sizes="16x16">
 	<link th:href="@{/assets/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 	<link th:href="@{/assets/plugins/jquery-toast/dist/jquery.toast.min.css}" rel="stylesheet">
-	<!-- <link th:href="@{/assets/plugins/sweet-alert-2/dist/sweetalert2.min.css}" rel="stylesheet"> -->
-	<link th:href="@{/assets/plugins/calendar/css/fullcalendar.css}" rel="stylesheet">
+	<!-- <link th:href="@{/assets/plugins/sweet-alert-2/dist/sweetalert2.min.css}" rel="stylesheet"> -->		
 	<link th:href="@{/assets/css/style.css}" rel="stylesheet">
 	<link th:href="@{/assets/css/colors/default-dark.css}" id="theme" rel="stylesheet">
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -20,6 +19,10 @@
     	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
+	<link th:if="${thuri == '/dashboard/calendar'}" th:href="@{/assets/plugins/calendar/css/fullcalendar.css}" rel="stylesheet">
+	<link th:if="${thuri == '/activity/create'}" th:href="@{/assets/plugins/dropify/dist/css/dropify.min.css}" rel="stylesheet">
+    <link th:if="${thuri == '/activity/account/stats'}" th:href="@{/assets/plugins/chartist-js/dist/chartist.min.css}" rel="stylesheet">
+    <link th:if="${thuri == '/activity/account/stats'}" th:href="@{/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css}" rel="stylesheet">
 </head>
 <body class="fix-header card-no-border fix-sidebar">
 
@@ -126,6 +129,17 @@
                                 <li><a th:href="@{/dashboard/calendar}">Calendar</a></li>
                             </ul>
 						</li>
+						<li>
+                            <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                                <i class="mdi mdi-ticket"></i>
+                                <span class="hide-menu">Activity</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a th:href="@{/activity/account/stats}">Account Stats</a></li>
+                                <li><a th:href="@{/activity/create}">Create</a></li>
+                                <li><a th:href="@{/activity/list}">My activities</a></li>
+                            </ul>
+                        </li>
 					</ul>
 				</nav>
 			</div>

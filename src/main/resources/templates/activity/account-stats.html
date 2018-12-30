@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="fragments/bootstrap :: head"></head>
+<body class="fix-header card-no-border fix-sidebar">
+	<th:block th:include="fragments/bootstrap :: preloader"></th:block>
+	<div id="main-wrapper">	
+		<th:block th:include="fragments/bootstrap :: navigation"></th:block>		
+		<div class="page-wrapper">
+			<div class="container-fluid">
+				<div class="row page-titles">
+					<div class="col-md-5 align-self-center">
+						<h3 class="text-themecolor">Account Stats</h3>
+					</div>
+					<div class="col-md-7 align-self-center">
+						<ol class="breadcrumb">
+                            <li class="breadcrumb-item active">Account Stats</li>
+                        </ol>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-9 col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div><h3 class="card-title m-b-5"><span class="lstick"></span>Activities Overview </h3></div>
+                                    <div class="ml-auto">
+                                        <select class="custom-select b-0">
+                                            <option value="2018" selected="">2018</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2016">2016</option>
+                                        </select>
+                                    </div>                                    
+                                </div>
+                            </div>
+                            <div class="bg-theme stats-bar">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4">
+                                        <div class="p-20 active">
+                                            <h6 class="text-white">Total Activities</h6>
+                                            <h3 th:text="${balance.get('line--total')}" class="text-white m-b-0"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4">
+                                        <div class="p-20">
+                                            <h6 class="text-white">This Month</h6>
+                                            <h3 th:text="${balance.get('line--month')}" class="text-white m-b-0">$7,589</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4">
+                                        <div class="p-20">
+                                            <h6 class="text-white">This Week</h6>
+                                            <h3 th:text="${balance.get('line--week')}" class="text-white m-b-0">$1,476</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="sales-overview2" class="chartist--container line-primary p-relative" style="height:360px;"></div>
+                            </div>
+                        </div>
+                    </div>
+				    <div class="col-lg-3 col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title"><span class="lstick"></span>Visit Separation</h4>
+                                <div id="visitor" style="height: 290px; width: 100%; max-height: 290px;" class="chartist--container pie-primary"></div>
+                                <table class="table vm font-14">
+                                    <tbody>
+                                        <tr>
+                                            <td class="b-0">Open</td>
+                                            <td th:text="${balance.get('pie--open')} + '%'" class="text-right font-medium b-0"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>In Process</td>
+                                            <td th:text="${balance.get('pie--in-process')} + '%'" class="text-right font-medium"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Closed</td>
+                                            <td th:text="${balance.get('pie--closed')} + '%'" class="text-right font-medium"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+			<footer class="footer"> © 2017 Admin Pro by wrappixel.com </footer>
+		</div>	
+	</div>
+	
+	<th:block th:include="fragments/bootstrap :: scripts"></th:block>
+	
+	<script th:inline="javascript">/*<![CDATA[*/
+    var Ox00 = {
+        /**
+         * @param {Object} init
+         */
+        init: {
+            line: true,
+            pie: /*[[${balance.get("line--total")} > 0]]*/
+        },
+        
+        /**
+         * @param {Object} data
+         */
+        data: {
+            line: /*[[${balance.get("line--data")}]]*/,
+            pie: [
+                /*[[${balance.get("pie--open")}]]*/,
+                /*[[${balance.get("pie--in-process")}]]*/,
+                /*[[${balance.get("pie--closed")}]]*/
+            ]
+        }
+    };
+    /*]]>*/</script>
+	
+	<script th:src="@{/assets/plugins/chartist-js/dist/chartist.min.js}"></script>
+    <script th:src="@{/assets/plugins/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js}"></script>
+    <script th:src="@{/assets/js/activity/account-stats.js}"></script>
+
+</body>
+</html>

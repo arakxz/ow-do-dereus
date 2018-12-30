@@ -13,12 +13,12 @@ public interface CalendarRepository extends CrudRepository<Calendar, Long> {
     public Calendar findById(long id);
 
     @Query(""
-            + " SELECT cal FROM Calendar cal"
-            + " JOIN cal.user usr"
-            + " WHERE usr.id = ?1"
-            + "   AND (cal.start BETWEEN ?2 AND ?3 OR cal.end BETWEEN ?2 AND ?3)" 
+            + " SELECT calendar FROM Calendar calendar"
+            + " JOIN calendar.user user"
+            + " WHERE user.id = ?1"
+            + "   AND (calendar.start BETWEEN ?2 AND ?3 OR calendar.end BETWEEN ?2 AND ?3)" 
     )
-    public List<Calendar> allEventsOnDates(
+    public List<Calendar> allEventsWithDates(
             long user, Date start, Date end
     );
 

@@ -9,15 +9,20 @@ import com.arakxz.core.business.entity.Role;
 import com.arakxz.core.business.entity.User;
 import com.arakxz.core.business.repository.RoleRepository;
 import com.arakxz.core.business.repository.UserRepository;
+import com.arakxz.core.business.service.storage.StorageService;
+
 
 @Component
-public class UserServiceRunner implements ApplicationRunner {
+public class SystemServiceRunner implements ApplicationRunner {
 
 	@Autowired
 	private UserRepository userrepo;
 
 	@Autowired
 	private RoleRepository rolerepo;
+	
+	@Autowired
+	private StorageService storageService;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
@@ -29,6 +34,9 @@ public class UserServiceRunner implements ApplicationRunner {
 		user.addRole(this.rolerepo.findByName(Role.ROLE_ADMIN));
 
 		this.userrepo.save(user);
+		
+		this.storageService.deleteAll();
+		this.storageService.init();
 
 	}
 

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="fragments/bootstrap :: head"></head>
+<body class="fix-header card-no-border fix-sidebar">
+	<th:block th:include="fragments/bootstrap :: preloader"></th:block>
+	<div id="main-wrapper">	
+		<th:block th:include="fragments/bootstrap :: navigation"></th:block>		
+		<div class="page-wrapper">
+			<div class="container-fluid">
+				<div class="row page-titles">
+					<div class="col-md-5 align-self-center">
+						<h3 class="text-themecolor">Create</h3>
+					</div>
+					<div class="col-md-7 align-self-center">
+						<ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/activity/account/stats}">Account Stats</a></li>
+                            <li class="breadcrumb-item active">Create</li>
+                        </ol>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+                                <form th:action="@{/activity/register}" method="post" id="request--container" class="form-material" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label>Subject</label>
+                                        <input type="text" placeholder="I need ..." class="form-control form-control-line" name="subject">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Content</label>
+                                        <textarea class="form-control pt-1" rows="8" name="content" placeholder="Enter text ..."></textarea>
+                                        <span class="help-block text-muted">
+                                            <small>A block of help text that breaks onto a new line and may extend beyond one line.</small>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-file-max-fs">File upload</label>
+                                        <input type="file" name="file" id="input-file-max-fs" class="dropify" data-height="100">
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success">Create Request</button>
+                                    </div>
+                                </form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer"> © 2017 Admin Pro by wrappixel.com </footer>
+		</div>	
+	</div>
+	
+	<th:block th:include="fragments/bootstrap :: scripts"></th:block>
+	
+	<script th:src="@{/assets/plugins/dropify/dist/js/dropify.min.js}"></script>
+    <script th:src="@{/assets/js/activity/register.js}"></script>
+	
+</body>
+</html>

@@ -5877,3 +5877,30 @@ File: scss
     position: absolute;
     height: 100%; }
    
+.custom-file-control.selected:lang(en)::after {
+  content: "" !important;
+}
+
+.dropify-message p {
+	text-align: center;
+}
+
+.stats-bar .active {
+  background-color: rgba(0, 0, 0, .1); }
+
+.chartist--container.line-primary .ct-line,
+.chartist--container.line-primary .ct-point {
+  stroke: #398bf7; }
+
+.chartist--container.line-primary .ct-grid {
+  stroke: rgba(0, 0, 0, .15); }
+
+.chartist--container.pie-primary .ct-series-a .ct-slice-donut {
+  stroke: #398bf7; }
+  
+.chartist--container.pie-primary .ct-series-b .ct-slice-donut {
+  stroke: #26c6da; }
+ 
+.chartist--container.pie-primary .ct-series-c .ct-slice-donut {
+  stroke: #745af2; }
+  
