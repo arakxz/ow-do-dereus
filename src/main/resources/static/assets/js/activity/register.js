@@ -22,4 +22,11 @@ $(function () {
 
         }
     }.init();
+    
+    $('#date-range.input-daterange').datepicker({
+    	format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+    });
+    
 });

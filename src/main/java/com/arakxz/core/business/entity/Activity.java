@@ -1,7 +1,9 @@
 package com.arakxz.core.business.entity;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -35,15 +38,12 @@ public class Activity {
     )
     private User author;
     
-    @ManyToOne(
-            fetch = FetchType.LAZY,
-            optional = false
+    @OneToMany(
+    		cascade = CascadeType.ALL,
+    		fetch = FetchType.LAZY,
+            mappedBy = "activity"
     )
-    @JoinColumn(
-            name = "id_file",
-            nullable = false
-    )
-    private File file;
+    private List<File> files;
     
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -105,21 +105,21 @@ public class Activity {
         this.author = author;
     }
 
-    /**
-     * @return the file
-     */
-    public File getFile() {
-        return file;
-    }
+	/**
+	 * @return the files
+	 */
+	public List<File> getFiles() {
+		return files;
+	}
 
-    /**
-     * @param file the file to set
-     */
-    public void setFile(File file) {
-        this.file = file;
-    }
+	/**
+	 * @param files the files to set
+	 */
+	public void setFiles(List<File> files) {
+		this.files = files;
+	}
 
-    /**
+	/**
      * @return the content
      */
     public String getContent() {

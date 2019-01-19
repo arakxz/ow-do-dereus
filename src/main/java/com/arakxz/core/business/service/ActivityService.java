@@ -72,8 +72,16 @@ public class ActivityService {
 
     }
     
+    public List<Activity> list() {
+        return this.activityRepository.findAll();
+    }
+    
     public List<Activity> list(User author) {
         return this.activityRepository.findAllByAuthor(author);
+    }    
+    
+    public Activity find(long id) {
+    	return this.activityRepository.findById(id);
     }
 
     public Resource file(User author, String hash) {
@@ -88,7 +96,7 @@ public class ActivityService {
         }
     }
 
-    public int create(User author, MultipartFile upload, String title, String content) {
+    public int create(User author, MultipartFile upload, String title, String content, User responsible) {
 
         try {
 
@@ -96,26 +104,46 @@ public class ActivityService {
 
             String location = this.storageService.load(upload.getOriginalFilename()).toString();
             
+            Activity activity = new Activity();
+            
+            activity.setAuthor(author);
+            activity.setTitle(title);
+            activity.setContent(content);
+            
+            if (author.isAdmin()) {
+        		activity.setResponsible(responsible);
+        	}
+
             File file = new File();
             
             file.setLocation(location);
             file.setHash(UserService.passwordHash(location));
+            file.setActivity(activity);
             
-            Activity activity = new Activity();
-            
-            activity.setAuthor(author);
-            activity.setFile(file);
-            activity.setTitle(title);
-            activity.setContent(content);
-
-            this.fileRepository.save(file);
             this.activityRepository.save(activity);
+            this.fileRepository.save(file);
 
         } catch (StorageServiceException error) {
             return ERROR;
         }
 
         return OK;
+    }
+    
+    public int update(User author, long id, String title, String content, User responsible) {
+    	
+    	Activity activity = this.activityRepository.findById(id);
+
+    	activity.setTitle(title);
+    	activity.setContent(content);
+    	
+    	if (author.isAdmin()) {
+    		activity.setResponsible(responsible);
+    	}
+    	
+    	this.activityRepository.save(activity);
+    	
+    	return OK;
     }
     
     private int[] currentYear(User user) {

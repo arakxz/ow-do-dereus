@@ -127,6 +127,27 @@ public class UserService {
 	}
 	
 	
+	/** 
+	 * @param id, the user's identifier
+	 * 
+	 * @return
+	 */
+	public User find(long id) {
+		return this.userrepo.findById(id)
+				   .orElse(null);
+	}
+	
+	
+	/** 
+	 * @param id, the user's identifier
+	 * 
+	 * @return
+	 */
+	public User find(String id) {
+		return this.find(Long.parseLong(id));
+	}
+	
+	
 	/**
 	 * @param username
 	 * @param roles

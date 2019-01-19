@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head th:replace="fragments/bootstrap :: head"></head>
+<body class="fix-header card-no-border fix-sidebar">
+	<th:block th:include="fragments/bootstrap :: preloader"></th:block>
+	<div id="main-wrapper">	
+		<th:block th:include="fragments/bootstrap :: navigation"></th:block>		
+		<div class="page-wrapper">
+			<div class="container-fluid">
+				<div class="row page-titles">
+					<div class="col-md-5 align-self-center">
+						<h3 class="text-themecolor">Create</h3>
+					</div>
+					<div class="col-md-7 align-self-center">
+						<ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/activity/account/stats}">Account Stats</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/activity/manage}">Manage Activities</a></li>
+                            <li class="breadcrumb-item active">Show</li>
+                        </ol>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+								<form th:action="@{|/activity/${activity.id}/update|}" method="post" id="request--container" class="form-material" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label>Subject</label>
+                                        <input th:value="${activity.title}" type="text" placeholder="I need ..." class="form-control form-control-line" name="title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Content</label>
+                                        <textarea th:text="${activity.content}" class="form-control pt-1" rows="8" name="content" placeholder="Enter text ..."></textarea>
+                                        <span class="help-block text-muted">
+                                            <small>A block of help text that breaks onto a new line and may extend beyond one line.</small>
+                                        </span>
+                                    </div>
+                                    <th:block th:if="${user?.admin}">
+                                    <div class="form-group row">
+                                    	<div class="col-md-6">
+	                                    	<label>Technical Support</label>
+	                                        <select class="form-control" name="responsible">
+	                                        	<option value="0">Choose</option>
+	                                        	<option th:each="technical : ${technicians}" th:value="${technical.id}" th:text="${technical.username}" th:selected="${technical.id == activity.responsible?.id}"></option>
+	                                        </select>
+	                                        <span class="help-block text-muted">
+	                                            <small>A block of help text that breaks onto a new line and may extend beyond one line.</small>
+	                                        </span>
+                                    	</div>
+                                    	<div class="col-md-6">
+                                    		<label>Commitment Dates</label>
+											<div class="input-group input-daterange" id="date-range">
+												<input type="text" class="form-control" name="start" readonly="readonly">
+												<div class="input-group-append">
+													<span class="input-group-text bg-info border-info text-white">TO</span>
+												</div>
+												<input type="text" class="form-control" name="end" readonly="readonly">
+											</div>
+                                    	</div>
+                                    </div>
+                                    </th:block>
+                                    <div class="form-group">
+                                        <button class="btn btn-success">Update Request</button>
+                                    </div>
+                                </form>
+                                
+								<table class="table color-bordered-table muted-bordered-table mb-0">
+									<thead>
+										<tr>
+											<th>File Name</th>
+											<th>Date</th>
+											<th>Status</th>
+											<th style="width:250px">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										<th:block th:each="file : ${activity.files}">
+										<tr>
+											<td th:text="${file.name}"></td>
+											<td th:text="${file.created}"></td>
+											<td><span class="label label-rounded label-primary">Active</span></td>
+											<td>
+												<a th:href="@{|/activity/${file.hash}/download|}" class="btn waves-effect waves-light btn-rounded btn-sm btn-info"><i class="mdi mdi-cloud-download"></i> Download</a>
+												<a href="javascript:void(0)" class="btn waves-effect waves-light btn-rounded btn-sm btn-danger"><i class="mdi mdi-delete"></i> Delete</a>
+											</td>
+										</tr>
+										</th:block>	                                            
+									</tbody>
+                                </table>
+                            	
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer"> &copy; 2017 Admin Pro by wrappixel.com </footer>
+		</div>	
+	</div>
+	
+	<th:block th:include="fragments/bootstrap :: scripts"></th:block>
+	
+	<script th:src="@{/assets/plugins/dropify/dist/js/dropify.min.js}"></script>
+	<script th:src="@{/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
+    <script th:src="@{/assets/js/activity/register.js}"></script>
+	
+</body>
+</html>

@@ -29,7 +29,9 @@ public class StorageService {
     @Autowired
     public StorageService() {
         String folder = UUID.randomUUID().toString().toUpperCase();
-        this.location = Paths.get("/tmp/" + UUID_FOLDER + "/" + folder);
+        this.location = Paths.get(
+        		System.getProperty("java.io.tmpdir") + UUID_FOLDER + System.getProperty("file.separator") + folder
+        );
     }
 
     public void init() {
