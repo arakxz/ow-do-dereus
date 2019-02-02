@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.arakxz.core.business.entity.Activity;
+import com.arakxz.core.business.entity.Calendar;
 import com.arakxz.core.business.entity.File;
 import com.arakxz.core.business.entity.User;
 import com.arakxz.core.business.repository.ActivityRepository;
@@ -21,153 +22,175 @@ import com.arakxz.core.business.service.storage.StorageServiceException;
 @Service
 public class ActivityService {
 
-    public static final int OK = 1;
-    public static final int ERROR = 2;
+	public static final int OK = 1;
+	public static final int ERROR = 2;
+	public static final int ERROR_IN_DATES = 3;
 
-    @Autowired
-    private ActivityRepository activityRepository;
-    
-    @Autowired
-    private FileRepository fileRepository;
+	public static final String ACTIVITY_COLOR = "bg-success";
 
-    
-    @Autowired
-    private StorageService storageService;
+	@Autowired
+	private ActivityRepository activityRepository;
 
-    
-    /**
-     * @param user
-     * 
-     * @return
-     */
-    public Map<String, Object> balance(User user) {
+	@Autowired
+	private FileRepository fileRepository;
 
-        Map<String, Object> balance = new HashMap<String, Object>();
+	@Autowired
+	private StorageService storageService;
 
-        long total = this.activityRepository.countByAuthor(user.getId());
-        long open = 0;
-        long inProcess = 0;
-        long closed = 0;
+	
+	/**
+	 * @param user
+	 * 
+	 * @return
+	 */
+	public Map<String, Object> balance(User user) {
 
-        balance.put("line--total", total);
-        balance.put("line--month", this.activityRepository.countByAuthorWithDates(user.getId(),
-                CalendarService.firstDayOfMonth(), CalendarService.lastDayOfMonth())
-        );
-        balance.put("line--week", this.activityRepository.countByAuthorWithDates(user.getId(),
-                CalendarService.firstDayOfWeek(), CalendarService.lastDayOfWeek())
-        );
-        balance.put("line--data", this.currentYear(user));
+		Map<String, Object> balance = new HashMap<String, Object>();
 
-        if (total > 0) {
-            open = (this.activityRepository.countByAuthorWithStatus(user.getId(), Activity.STATUS_OPEN) * 100) / total;
-            inProcess = (this.activityRepository.countByAuthorWithStatus(user.getId(), Activity.STATUS_IN_PROCESS) * 100) / total;
-            closed = (this.activityRepository.countByAuthorWithStatus(user.getId(), Activity.STATUS_CLOSED) * 100) / total;
-        }
+		long total = this.activityRepository.countByAuthor(user.getId());
+		long open = 0;
+		long inProcess = 0;
+		long closed = 0;
 
-        balance.put("pie--open", open);
-        balance.put("pie--in-process", inProcess);
-        balance.put("pie--closed", closed);
-        
-        return balance;
+		balance.put("line--total", total);
+		balance.put("line--month", this.activityRepository.countByAuthorWithDates(user.getId(),
+				CalendarService.firstDayOfMonth(), CalendarService.lastDayOfMonth()));
+		balance.put("line--week", this.activityRepository.countByAuthorWithDates(user.getId(),
+				CalendarService.firstDayOfWeek(), CalendarService.lastDayOfWeek()));
+		balance.put("line--data", this.currentYear(user));
 
-    }
-    
-    public List<Activity> list() {
-        return this.activityRepository.findAll();
-    }
-    
-    public List<Activity> list(User author) {
-        return this.activityRepository.findAllByAuthor(author);
-    }    
-    
-    public Activity find(long id) {
-    	return this.activityRepository.findById(id);
-    }
+		if (total > 0) {
+			open = (this.activityRepository.countByAuthorWithStatus(user.getId(), Activity.STATUS_OPEN) * 100) / total;
+			inProcess = (this.activityRepository.countByAuthorWithStatus(user.getId(), Activity.STATUS_IN_PROCESS)
+					* 100) / total;
+			closed = (this.activityRepository.countByAuthorWithStatus(user.getId(), Activity.STATUS_CLOSED) * 100)
+					/ total;
+		}
 
-    public Resource file(User author, String hash) {
-        try {
+		balance.put("pie--open", open);
+		balance.put("pie--in-process", inProcess);
+		balance.put("pie--closed", closed);
 
-            File file = this.fileRepository.findByHash(hash);
+		return balance;
 
-            return this.storageService.loadAsResource(file.getLocation());
+	}
 
-        } catch (FileNotFoundException error) {
-            return null;
-        }
-    }
+	public List<Activity> list() {
+		return this.activityRepository.findAll();
+	}
 
-    public int create(User author, MultipartFile upload, String title, String content, User responsible) {
+	public List<Activity> list(User author) {
+		return this.activityRepository.findAllByAuthor(author);
+	}
 
-        try {
+	public Activity find(long id) {
+		return this.activityRepository.findById(id);
+	}
 
-            this.storageService.store(upload);
+	public Resource file(User author, String hash) {
+		try {
 
-            String location = this.storageService.load(upload.getOriginalFilename()).toString();
-            
-            Activity activity = new Activity();
-            
-            activity.setAuthor(author);
-            activity.setTitle(title);
-            activity.setContent(content);
-            
-            if (author.isAdmin()) {
-        		activity.setResponsible(responsible);
-        	}
+			File file = this.fileRepository.findByHash(hash);
 
-            File file = new File();
-            
-            file.setLocation(location);
-            file.setHash(UserService.passwordHash(location));
-            file.setActivity(activity);
-            
-            this.activityRepository.save(activity);
-            this.fileRepository.save(file);
+			return this.storageService.loadAsResource(file.getLocation());
 
-        } catch (StorageServiceException error) {
-            return ERROR;
-        }
+		} catch (FileNotFoundException error) {
+			return null;
+		}
+	}
 
-        return OK;
-    }
-    
-    public int update(User author, long id, String title, String content, User responsible) {
-    	
-    	Activity activity = this.activityRepository.findById(id);
+	public int create(User author, MultipartFile upload, String title, String content, User responsible,
+			Calendar calendar) {
 
-    	activity.setTitle(title);
-    	activity.setContent(content);
-    	
-    	if (author.isAdmin()) {
-    		activity.setResponsible(responsible);
-    	}
-    	
-    	this.activityRepository.save(activity);
-    	
-    	return OK;
-    }
-    
-    private int[] currentYear(User user) {
-        
-        int month;
-        int total;
-        String[] parts;
-        
-        int[] chart = new int[12];
-        
-        List<String> current = this.activityRepository.countByAuthorCurrentYear(user.getId());
-        
-        for (String string : current) {
-            
-            parts = string.split(";");
-            
-            month = Integer.parseInt(parts[0]);
-            total = Integer.parseInt(parts[1]);
+		try {
 
-            chart[month -1] = total;
-            
-        }
-        
-        return chart;
-    }
+			this.storageService.store(upload);
+
+			String location = this.storageService.load(upload.getOriginalFilename()).toString();
+
+			Activity activity = new Activity();
+
+			activity.setAuthor(author);
+			activity.setTitle(title);
+			activity.setContent(content);
+
+			if (author.isAdmin()) {
+				activity.setCalendar(calendar);
+				activity.setResponsible(responsible);
+			}
+
+			File file = new File();
+
+			file.setLocation(location);
+			file.setHash(UserService.passwordHash(location));
+			file.setActivity(activity);
+
+			this.activityRepository.save(activity);
+			this.fileRepository.save(file);
+
+		} catch (StorageServiceException error) {
+			return ERROR;
+		}
+
+		return OK;
+	}
+
+	/**
+	 * update an activity and record a calendar in case you do not
+	 * have an established calendar
+	 * 
+	 * @param activity
+	 * @param author
+	 * @param title
+	 * @param content
+	 * @param responsible
+	 * @param calendar
+	 * 
+	 * @return
+	 */
+	public int update(Activity activity, User author, String title, String content, User responsible,
+			Calendar calendar) {
+
+		activity.setTitle(title);
+		activity.setContent(content);
+
+		if (author.isAdmin()) {
+
+			activity.setResponsible(responsible);
+
+			if (activity.getCalendar() == null && calendar != null) {
+				activity.setCalendar(calendar);
+			}
+
+		}
+
+		this.activityRepository.save(activity);
+
+		return OK;
+	}
+
+	private int[] currentYear(User user) {
+
+		int month;
+		int total;
+		String[] parts;
+
+		int[] chart = new int[12];
+
+		List<String> current = this.activityRepository.countByAuthorCurrentYear(user.getId());
+
+		for (String string : current) {
+
+			parts = string.split(";");
+
+			month = Integer.parseInt(parts[0]);
+			total = Integer.parseInt(parts[1]);
+
+			chart[month - 1] = total;
+
+		}
+
+		return chart;
+	}
 
 }

@@ -24,9 +24,6 @@ public class Calendar {
     private long id;
     
     @Column(nullable = false)
-    private boolean editable = true;
-    
-    @Column(nullable = false)
     private String title;
     
     @Column(nullable = false)
@@ -67,24 +64,8 @@ public class Calendar {
     public void setId(long id) {
         this.id = id;
     }
-
-    /**
-     * @param editable the editable to set
-     */
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
     
-    /**
-     * @return the editable
-     */
-    @JsonProperty("allDay")
-    public boolean getEditable() {
-        return editable;
-    }
     
-  
     /**
      * @return the title
      */

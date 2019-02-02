@@ -77,9 +77,22 @@
 	
 	<th:block th:include="fragments/bootstrap :: scripts"></th:block>
 	
+	<script th:inline="javascript">/*<![CDATA[*/	
+	var Cx00 = /*[[${T(com.arakxz.core.business.service.ActivityService).OK}]]*/ -1;
+	var Cx01 = /*[[${T(com.arakxz.core.business.service.ActivityService).ERROR}]]*/ -1;
+	var Cx02 = /*[[${T(com.arakxz.core.business.service.ActivityService).ERROR_IN_DATES}]]*/ -1;
+	
+	var Ox00 = {
+		/**
+		 * @param {Number} response
+		 */
+		response: /*[[${status}]]*/ 0
+	};
+	/*]]>*/</script>
+	
 	<script th:src="@{/assets/plugins/dropify/dist/js/dropify.min.js}"></script>
 	<script th:src="@{/assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js}"></script>
-    <script th:src="@{/assets/js/activity/register.js}"></script>
+    <script th:src="@{/assets/js/activity/create.js}"></script>
 	
 </body>
 </html>

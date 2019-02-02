@@ -38,18 +38,29 @@ public class Activity {
     )
     private User author;
     
-    @OneToMany(
-    		cascade = CascadeType.ALL,
-    		fetch = FetchType.LAZY,
-            mappedBy = "activity"
+    
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = true
     )
-    private List<File> files;
+    @JoinColumn(
+            name = "id_calendar",
+            nullable = true
+    )
+    private Calendar calendar;
     
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
     
     @Column(nullable = false)
     private Date created;
+    
+    @OneToMany(
+    		cascade = CascadeType.ALL,
+    		fetch = FetchType.LAZY,
+            mappedBy = "activity"
+    )
+    private List<File> files;
     
     @ManyToOne(
             fetch = FetchType.LAZY,
@@ -77,33 +88,75 @@ public class Activity {
         this.status = STATUS_OPEN;
     }
 
-    /**
-     * @return the id
-     */
-    public long getId() {
-        return id;
-    }
+	/**
+	 * @return the id
+	 */
+	public long getId() {
+		return id;
+	}
 
-    /**
-     * @param id the id to set
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    /**
-     * @return the author
-     */
-    public User getAuthor() {
-        return author;
-    }
+	/**
+	 * @return the author
+	 */
+	public User getAuthor() {
+		return author;
+	}
 
-    /**
-     * @param author the author to set
-     */
-    public void setAuthor(User author) {
-        this.author = author;
-    }
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+	/**
+	 * @return the calendar
+	 */
+	public Calendar getCalendar() {
+		return calendar;
+	}
+
+	/**
+	 * @param calendar the calendar to set
+	 */
+	public void setCalendar(Calendar calendar) {
+		this.calendar = calendar;
+	}
+
+	/**
+	 * @return the content
+	 */
+	public String getContent() {
+		return content;
+	}
+
+	/**
+	 * @param content the content to set
+	 */
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	/**
+	 * @return the created
+	 */
+	public Date getCreated() {
+		return created;
+	}
+
+	/**
+	 * @param created the created to set
+	 */
+	public void setCreated(Date created) {
+		this.created = created;
+	}
 
 	/**
 	 * @return the files
@@ -120,73 +173,45 @@ public class Activity {
 	}
 
 	/**
-     * @return the content
-     */
-    public String getContent() {
-        return content;
-    }
+	 * @return the responsible
+	 */
+	public User getResponsible() {
+		return responsible;
+	}
 
-    /**
-     * @param content the content to set
-     */
-    public void setContent(String content) {
-        this.content = content;
-    }
+	/**
+	 * @param responsible the responsible to set
+	 */
+	public void setResponsible(User responsible) {
+		this.responsible = responsible;
+	}
 
-    /**
-     * @return the created
-     */
-    public Date getCreated() {
-        return created;
-    }
+	/**
+	 * @return the status
+	 */
+	public int getStatus() {
+		return status;
+	}
 
-    /**
-     * @param created the created to set
-     */
-    public void setCreated(Date created) {
-        this.created = created;
-    }
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(int status) {
+		this.status = status;
+	}
 
-    /**
-     * @return the responsible
-     */
-    public User getResponsible() {
-        return responsible;
-    }
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return title;
+	}
 
-    /**
-     * @param responsible the responsible to set
-     */
-    public void setResponsible(User responsible) {
-        this.responsible = responsible;
-    }
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    /**
-     * @return the status
-     */
-    public int getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    
 }

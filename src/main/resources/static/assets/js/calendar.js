@@ -10,6 +10,7 @@ $(function () {
         store: null, methods: {
 
             createNewEvent: function (event) { event.preventDefault();
+
                 $.imodal({
 
                     title: 'Add Event',
@@ -60,33 +61,29 @@ $(function () {
 
 
             /**
-             *
+             * 
              */
             drop: function (date, event, ui) {
-                
-                console.log('-----------------');
-                console.log($(this));
-                console.log(date);
-                console.log(event);
-                console.log(ui);
-                console.log('-----------------');
-     
+               // removed 
             },
 
 
             eventClick: function(event) {
-                
-                console.log('start:', event.start.format('YYYY-MM-DD HH:mm:ss'))
-                console.log('end:', event.end.format('YYYY-MM-DD HH:mm:ss'))
-                
+
+                var days = event.end === null
+                		 ? 1
+                		 : event.end.diff(event.start, 'days') + 1;
+
                 $.imodal({
 
                     title: 'Add Event',
                     body() {
 
+                    	var aux = event.className[0];
                         var options = '';
+                        
                         for (category in Ox00.categories) {
-                            options += (category !== event.category)
+                            options += (category !== aux)
                                     ? `<option value="${category}">${Ox00.categories[category]}</option>`
                                     : `<option value="${category}" selected>${Ox00.categories[category]}</option>`;
                         }
@@ -106,6 +103,10 @@ $(function () {
                             + '        <select class="form-control" name="category">'+ options +'</select>'
                             + '      </div>'
                             + '    </div>'
+                            + '    <div class="col-md-12">'
+                            + '        <label class="control-label">Duración</label>'
+                            + '        <input type="range" name="duration" class="form-control" min="1" max="10" step="1" id="range" value="'+ days +'">'
+                            + '    </div>'
                             + '  </div>'
                             + '</div>';
 
@@ -116,11 +117,16 @@ $(function () {
 
                         var title = this.find('input[name="title"]').val().trim();
                         var category = this.find('select[name="category"]').val().trim();
+                        var duration = parseInt(this.find('input[name="duration"]').val().trim()) || 1; 
 
                         if (!title.length) {
                             console.log('empty');
                             return;
                         }
+
+                        // Add more or less duration to event
+                        event.end = moment(event.start.format('YYYY-MM-DD 23:59:59'));
+                        event.end.add(duration - 1, 'days');
 
                         /** @callback */
                         var $update = wrapper.calendar.update;
@@ -135,7 +141,7 @@ $(function () {
 
 
             eventDelete: function ($event) {
-                console.log($event);
+
             },
 
 
@@ -146,13 +152,8 @@ $(function () {
              * @callback rollback
              */
             eventDrop: function (event, delta, rollback) {
-                
-                console.log('-----------------');
-                console.log(event);
-                console.log(delta);
-                console.log('-----------------');
-                
-                /* function */
+
+            	/** @callback */
                 var $update = wrapper.calendar.update;
                     $update(Object.assign(event, { category: event.className[0] }));
 
@@ -164,24 +165,23 @@ $(function () {
              */
             eventReceive: function (event) {
 
-                console.log('-----------------');
-                console.log(event);
-                console.log('-----------------');
-                
-                if (event.end === null) {
-                    event.end = event.start.clone();
-                    event.end.add(1, 'days');
-                }
+            	// TODO
+                // When the event is dragged until a date this
+                // event is not a finish date, by default we will assign
+                // the start date
+            	if (event.end === null) {
+            		event.end = moment(event.start.format('YYYY-MM-DD 23:59:59'));
+            	}
 
                 /** @callback */
                 var $render = wrapper.calendar.render;
                     $render({
                         title: event.title,
                         start: event.start.format('YYYY-MM-DD'),
-                        end: event.end.format('YYYY-MM-DD'),
+                        end: event.end.format('YYYY-MM-DD HH:mm:ss'),
                         category: event.category
-                    }, event, function () {
-                        wrapper.store.container.fullCalendar('removeEvents', event._id);
+                    }, event, function () {                    	
+                    	wrapper.store.container.fullCalendar('removeEvents', event._id);
                     });
                 
             },
@@ -194,11 +194,6 @@ $(function () {
              * @callback rollback
              */
             eventResize: function(event, delta, rollback) {
-                
-                console.log('-----------------');
-                console.log('start:', event.start.format('YYYY-MM-DD HH:mm:ss'));
-                console.log('end:', event.end.format('YYYY-MM-DD HH:mm:ss'));
-                console.log('-----------------');
 
                 /** @callback */
                 var $update = wrapper.calendar.update;
@@ -212,6 +207,7 @@ $(function () {
              * @param {Object} end
              */
             select: function (start, end) {
+
                 $.imodal({
 
                     title: 'Add Event',
@@ -258,7 +254,10 @@ $(function () {
                             $render({
                                 title,
                                 start: start.format('YYYY-MM-DD'),
-                                end: end.format('YYYY-MM-DD'),
+                                end: start.format('YYYY-MM-DD 23:59:59'),
+                                // TODO
+                                // It is sent the same day with the last available time.
+                                // end: end.format('YYYY-MM-DD'),
                                 category
                             });
                         
@@ -304,6 +303,7 @@ $(function () {
                     center: 'title',
                     right: 'today'
                 },
+                allDayDefault: false,
                 displayEventTime: false,
                 droppable: true,
                 // drop: $methods.drop,
@@ -313,7 +313,7 @@ $(function () {
                 eventClick: $methods.eventClick,
                 eventDrop: $methods.eventDrop,
                 eventReceive: $methods.eventReceive,
-                eventResize: $methods.eventResize,
+                // eventResize: $methods.eventResize,
                 events: {
                     url: '/dashboard/calendar/events',
                     error: function () {
@@ -346,22 +346,18 @@ $(function () {
                 
                 /** @callback */
                 var $container = wrapper.store.container;
-                
+
                 $.ajax({
                     url: '/dashboard/calendar/event/register',
                     method: 'POST',
                     data 
                 })
                 .done(function (response) {
+                	if (original !== void 0) {
+                		$container.fullCalendar('removeEvents', original._id);
+                	}
+                	$container.fullCalendar('renderEvent', response.data);
                     
-                    if (original === void 0) {
-                        $container.fullCalendar('renderEvent', response.data);
-                        return;
-                    }
-                    else if (original !== void 0 && original.id === void 0) {
-                        original.id = response.data.id;
-                    }
-
                 });
                 
             },
@@ -382,23 +378,24 @@ $(function () {
                     data: {
                         title: data.title,
                         start: data.start.format('YYYY-MM-DD'),
-                        end: data.end.format('YYYY-MM-DD'),
+                        end: data.end !== null
+                        		? data.end.format('YYYY-MM-DD 23:59:59')
+                        		: data.start.format('YYYY-MM-DD 23:59:59'),
                         category: data.category
                     }
                 })
                 .done(function (response) {
-                    
+
                     if (original === void 0) {
                         return;
                     }
-                    
-                    console.log('-----------------');
-                    console.log(original);
-                    console.log(response);
-                    console.log(Object.assign(original, response.data));
-                    console.log('-----------------');
 
-                    $container.fullCalendar('updateEvent', Object.assign(original, response.data));
+                    // TODO
+                    // Change the second parameter to an array
+                    $container.fullCalendar(
+                    		'updateEvent', new Array(Object.assign(original, response.data))
+                    );
+                    $container.fullCalendar('refetchEvents');
 
                 });
 

@@ -112,6 +112,8 @@ public class DashboardController {
         
         Map<String, Object> response = new HashMap<String, Object>();
         
+        System.out.println("1) "+end);
+        
         response.put("code", CalendarService.OK);
         response.put("data", this.calendarService.registerOrUpdateCalendarEvent(
                 this.userService.authenticated(),

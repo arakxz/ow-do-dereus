@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.arakxz.core.business.repository.CalendarEventRepository;
 import com.arakxz.core.business.repository.CalendarRepository;
+import com.arakxz.core.business.entity.Activity;
 import com.arakxz.core.business.entity.Calendar;
 import com.arakxz.core.business.entity.CalendarEvent;
 import com.arakxz.core.business.entity.User;
@@ -20,6 +21,7 @@ import com.arakxz.core.business.entity.User;
 public class CalendarService {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     
     public static final int OK = 1;
     public static final int ERROR_FIELD_EMPTY = 2;
@@ -121,6 +123,29 @@ public class CalendarService {
         return this.registerOrUpdateCalendarEvent(user, title, category, start, end, 0);
 
     }
+    
+    /**
+     * @param user
+     * @param title
+     * @param category
+     * @param start
+     * @param end
+     * @param activity
+     * 
+     * @return
+     */
+    public Calendar registerOrUpdateCalendarEvent(
+            User user, String title, String category, Date start, Date end, Activity activity) {
+
+    	long id = 0;
+    	
+    	if (activity.getCalendar() != null) {
+    		id = activity.getCalendar().getId();
+    	}
+
+        return this.registerOrUpdateCalendarEvent(user, title, category, start, end, id);
+
+    }
 
     
     /**
@@ -165,7 +190,10 @@ public class CalendarService {
      * @throws ParseException
      */
     public static Date parse(String date) throws ParseException {
-        return new SimpleDateFormat(DATE_FORMAT).parse(date);
+    	if (date.length() == DATE_FORMAT.length()) {
+    		return new SimpleDateFormat(DATE_FORMAT).parse(date);
+    	}
+    	return new SimpleDateFormat(DATETIME_FORMAT).parse(date);
     }
 
     

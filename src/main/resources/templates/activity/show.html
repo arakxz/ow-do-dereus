@@ -50,11 +50,11 @@
                                     	<div class="col-md-6">
                                     		<label>Commitment Dates</label>
 											<div class="input-group input-daterange" id="date-range">
-												<input type="text" class="form-control" name="start" readonly="readonly">
+												<input th:value="${#dates.format(activity.calendar?.start, 'yyyy-MM-dd')}" type="text" class="form-control" name="start" readonly="readonly">
 												<div class="input-group-append">
 													<span class="input-group-text bg-info border-info text-white">TO</span>
 												</div>
-												<input type="text" class="form-control" name="end" readonly="readonly">
+												<input th:value="${#dates.format(activity.calendar?.end, 'yyyy-MM-dd')}" type="text" class="form-control" name="end" readonly="readonly">
 											</div>
                                     	</div>
                                     </div>

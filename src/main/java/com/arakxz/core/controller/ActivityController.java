@@ -1,5 +1,7 @@
 package com.arakxz.core.controller;
 
+import java.text.ParseException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.arakxz.core.business.entity.Activity;
+import com.arakxz.core.business.entity.Calendar;
 import com.arakxz.core.business.entity.User;
 import com.arakxz.core.business.service.ActivityService;
+import com.arakxz.core.business.service.CalendarService;
 import com.arakxz.core.business.service.UserService;
 
 @Controller
@@ -28,10 +34,13 @@ public class ActivityController {
 
     @Autowired
     private ActivityService activityService;
+
+    @Autowired
+    private CalendarService calendarService;
     
     
     @GetMapping("/create")
-    public String create(Model model) {
+    public String create(@ModelAttribute("status") String status, Model model) {
         
         User user = userService.authenticated();
 
@@ -40,6 +49,8 @@ public class ActivityController {
         if (user.isAdmin()) {
         	model.addAttribute("technicians", this.userService.all());
         }
+        
+        model.addAttribute("status", status.isEmpty() ? 0 : Integer.parseInt(status));
 
         return "activity/create";
 
@@ -114,27 +125,47 @@ public class ActivityController {
     
     @PostMapping("/{activity:[0-9]+}/update")
     public String update(
-    		@PathVariable("activity") String activity,
+    		@PathVariable("activity") String identifier,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
+            @RequestParam(value = "start", required = false) String start,
+            @RequestParam(value = "end", required = false) String end,
             @RequestParam(value = "responsible", required = false) String responsible, RedirectAttributes redirect) {
         
         User user = userService.authenticated();
-        User technical = user.isAdmin()
-        		? userService.find(responsible)
-        		: null;
+        User technical = null;
+
+        Calendar calendar = null;
+        Activity activity = this.activityService.find(Long.parseLong(identifier));
         
+        if (user.isAdmin()) {
+        	technical = userService.find(responsible);
+        	try {
+				calendar = calendarService.registerOrUpdateCalendarEvent(
+						activity.getAuthor(),
+						title,
+						ActivityService.ACTIVITY_COLOR,
+						CalendarService.parse(start),
+						CalendarService.parse(end),
+						activity
+				);
+			} catch (ParseException error) {
+				error.printStackTrace();
+			}
+        }
+
         int status = this.activityService.update(
+        		activity,
         		user,
-        		Long.parseLong(activity),
         		title,
         		content,
-        		technical
+        		technical,
+        		calendar
         );
         
         redirect.addFlashAttribute("status", status);
 
-        return "redirect:/activity/"+ activity +"/show";
+        return "redirect:/activity/"+ identifier +"/show";
     }
 
     
@@ -143,14 +174,33 @@ public class ActivityController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
+            @RequestParam(value = "start", required = false) String start,
+            @RequestParam(value = "end", required = false) String end,
             @RequestParam(value = "responsible", required = false) String responsible, RedirectAttributes redirect) {
         
         User user = userService.authenticated();
-        User technical = user.isAdmin()
-        		? userService.find(responsible)
-        		: null;
+        User technical = null;
+        Calendar calendar = null;
         
-        int status = this.activityService.create(user, file, title, content, technical);
+        if (user.isAdmin()) {
+        	technical = userService.find(responsible);
+        	// Only create a calendar if start and end date is available
+        	if (!start.isEmpty() && !end.isEmpty()) {
+        		try {
+					calendar = calendarService.registerOrUpdateCalendarEvent(
+							user,
+							title,
+							ActivityService.ACTIVITY_COLOR,
+							CalendarService.parse(start),
+							CalendarService.parse(end)
+					);
+				} catch (ParseException error) {
+					error.printStackTrace();
+				}
+        	}
+        }
+
+        int status = this.activityService.create(user, file, title, content, technical, calendar);
         
         redirect.addFlashAttribute("status", status);
 
