@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -38,7 +39,10 @@ public class User {
 
     @Column(nullable = false)
     private Date created;
-
+    
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
+    
     @ManyToMany(
             fetch = FetchType.EAGER,
             cascade = {
@@ -74,7 +78,7 @@ public class User {
     protected void onCreate() {
         this.created = new Date();
     }
-
+    
     public long getId() {
         return id;
     }
@@ -112,7 +116,21 @@ public class User {
         return created;
     }
 
-    public Collection<Role> getRoles() {
+	/**
+	 * @return the profile
+	 */
+	public Profile getProfile() {
+		return profile;
+	}
+
+	/**
+	 * @param profile the profile to set
+	 */
+	public void setProfile(Profile profile) {
+		this.profile = profile;
+	}
+
+	public Collection<Role> getRoles() {
         return roles;
     }
 

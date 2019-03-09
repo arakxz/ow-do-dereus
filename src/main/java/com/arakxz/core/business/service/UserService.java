@@ -11,8 +11,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.arakxz.core.business.entity.Profile;
 import com.arakxz.core.business.entity.Role;
 import com.arakxz.core.business.entity.User;
+import com.arakxz.core.business.repository.ProfileRepository;
 import com.arakxz.core.business.repository.UserRepository;
 
 @Service
@@ -28,8 +30,12 @@ public class UserService {
 	public static final int SUCCESS_UPDATE_USER = 8;
 
 	@Autowired
-	private UserRepository userrepo;
+	private UserRepository iuser;
+	
+	@Autowired
+	private ProfileRepository iprofile;
 
+	
 	@Autowired
 	private HttpServletRequest request;
 
@@ -52,16 +58,45 @@ public class UserService {
 			return ERROR_PASSWORD;
 		}
 
-		User user = this.userrepo.findByUsername(username);
+		User user = this.iuser.findByUsername(username);
 
 		if (user != null) {
 			return ERROR_USERNAME_REGISTERED;
 		}
 
-		this.userrepo.save(new User(username, passwordHash(password), email));
+		this.iuser.save(new User(username, passwordHash(password), email));
 
 		return OK;
 
+	}
+	
+	/**
+	 * @param name
+	 * @param phone
+	 * @param message
+	 * 
+	 * @return
+	 */
+	public int profile(String name, String phone, String message) {
+		
+		User user = this.authenticated();
+		Profile profile = user.getProfile();
+
+		if (profile == null) {
+			profile = new Profile();
+			
+			user.setProfile(profile);
+			profile.setUser(user);
+		}
+
+		profile.setCountry("country");
+		profile.setMessage(message);
+		profile.setName(name);
+		profile.setPhone(phone);
+		
+		this.iprofile.save(profile);
+		
+		return OK;
 	}
 
 	/**
@@ -75,7 +110,7 @@ public class UserService {
 			return ERROR_FIELD_EMPTY;
 		}
 
-		User userdb = this.userrepo.findByUsername(user.getUsername());
+		User userdb = this.iuser.findByUsername(user.getUsername());
 
 		if (userdb == null) {
 			return ERROR_USERNAME_NOT_REGISTERED;
@@ -105,7 +140,7 @@ public class UserService {
 	 * @return
 	 */
 	public List<User> all() {
-		return this.userrepo.findAll();
+		return this.iuser.findAll();
 	}
 	
 	
@@ -113,7 +148,7 @@ public class UserService {
 	 * @return
 	 */
 	public List<User> top5Users() {
-		return this.userrepo.findTop5ByOrderByIdDesc();
+		return this.iuser.findTop5ByOrderByIdDesc();
 	}
 	
 	
@@ -123,7 +158,7 @@ public class UserService {
 	 * @return
 	 */
 	public List<User> searchUser(String username) {
-		return this.userrepo.findByUsernameContaining(username);
+		return this.iuser.findByUsernameContaining(username);
 	}
 	
 	
@@ -133,7 +168,7 @@ public class UserService {
 	 * @return
 	 */
 	public User find(long id) {
-		return this.userrepo.findById(id)
+		return this.iuser.findById(id)
 				   .orElse(null);
 	}
 	
@@ -160,7 +195,7 @@ public class UserService {
 			return ERROR_FIELD_EMPTY;
 		}
 		
-		User user = this.userrepo.findByUsername(username);
+		User user = this.iuser.findByUsername(username);
 
 		if (user == null) {
 			return ERROR_USERNAME_NOT_REGISTERED;
@@ -168,7 +203,7 @@ public class UserService {
 
 		user.setRoles(roles);
 		
-		this.userrepo.save(user);
+		this.iuser.save(user);
 		
 		return SUCCESS_UPDATE_USER;
 	}
